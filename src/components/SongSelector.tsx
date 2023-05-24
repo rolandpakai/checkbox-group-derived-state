@@ -1,4 +1,4 @@
-import CheckboxGroupComponent from './checkboxgroup/CheckboxGroupComponent';
+import CheckboxGroup from './checkboxgroup';
 
 const OPTIONS: Record<string, string[]> = {
   Pop: ['A-Team', 'Thriller', 'Mirrors'],
@@ -11,7 +11,7 @@ const SongSelector: React.FC = () => {
     <>
       <h3>Song Selector</h3>
       <div>
-        <CheckboxGroupComponent value={OPTIONS} />
+        <CheckboxGroup value={OPTIONS} />
       </div>
     </>
   )
