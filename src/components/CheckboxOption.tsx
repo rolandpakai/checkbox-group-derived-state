@@ -9,14 +9,14 @@ type CheckboxOptionProps = {
 const CheckboxOption: React.FC<CheckboxOptionProps> = ({ value, genre }) => {
   const [checked, setChecked] = useState<boolean>(false);
   const { songOptionSelection } = useSongContext();
-  const { setGenreOptionCheck, getDerivedGenreState } = useSongDispatchContext();
+  const { setGenreOptionCheck, getDerivedGenreState, getGenreSelectionState } = useSongDispatchContext();
 
   useEffect(() => {
     const genreState = getDerivedGenreState(genre);
+    const contextValue = getGenreSelectionState(genre)[value];
 
-    if (genreState) {
-      setChecked(genreState);
-    }
+    setChecked(genreState ||contextValue)
+
   }, [songOptionSelection]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {

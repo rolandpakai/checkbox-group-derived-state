@@ -1,11 +1,13 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback } from "react";
 
+type SongOptionSelectionType = Record<string, Record<string, boolean>>;
 interface ISongContext {
   songOptionSelection: SongOptionSelectionType;
 }
 
 interface ISongDispatchContext {
   getDerivedGenreState: (value:string) => boolean;
+  getGenreSelectionState: (genre: string) => Record<string, boolean>;
   setGenreOptionCheck: (value: string, genre: string, checked: boolean) => void;
   setGenreCheck: (value: string, checked: boolean) => void;
 }
@@ -15,7 +17,6 @@ type SongContextProviderProps = {
   songOptions: Record<string, string[]>;
 }
 
-type SongOptionSelectionType = Record<string, Record<string, boolean>>;
 
 const SongContext = createContext<ISongContext | null>(null);
 
@@ -58,8 +59,8 @@ const initSongOptionSelection = (songOptions: Record<string, string[]>) => {
 const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, songOptions }) => {
   const [songOptionSelection, setSongOptionSelection] = useState<SongOptionSelectionType>(initSongOptionSelection(songOptions));
 
-  const getGenreSelectionState = useCallback((value: string) => {
-    return songOptionSelection[value];
+  const getGenreSelectionState = useCallback((genre: string) => {
+    return songOptionSelection[genre];
   }, [songOptionSelection]);
 
   const getDerivedGenreState = useCallback((value: string) => {
@@ -68,8 +69,8 @@ const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, son
     return isAllOptionChecked(genreOptions);
   }, [getGenreSelectionState]);
 
-  const setGenreCheck = useCallback((value: string, checked: boolean) => {
-    const genreOptions: Record<string, boolean> = songOptionSelection[value];
+  const setGenreCheck = useCallback((genre: string, checked: boolean) => {
+    const genreOptions: Record<string, boolean> = songOptionSelection[genre];
 
     for (let option in genreOptions) {
       if (genreOptions.hasOwnProperty(option)) {
@@ -77,7 +78,7 @@ const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, son
       }
     }
 
-    setSongOptionSelection({ ...songOptionSelection, [value]: genreOptions});
+    setSongOptionSelection({ ...songOptionSelection, [genre]: genreOptions});
   }, [songOptionSelection, setSongOptionSelection]);
 
   const setGenreOptionCheck = useCallback((value: string, genre: string, checked: boolean) => {
@@ -90,6 +91,7 @@ const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, son
 
   const songDispatchContextProviderValue = useMemo(() => ({ 
     getDerivedGenreState, 
+    getGenreSelectionState,
     setGenreOptionCheck, 
     setGenreCheck 
   }), [setGenreOptionCheck, setGenreCheck, getDerivedGenreState]);
