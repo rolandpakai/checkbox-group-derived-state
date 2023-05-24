@@ -70,6 +70,7 @@ const Genre: React.FC<GenreProps> = ({ value }) => {
   return (
     <div>
       <input 
+        id={value}
         name={value}
         onChange={handleChange}
         checked={checked}
@@ -108,6 +109,7 @@ const GenreOption: React.FC<GenreOptionProps> = ({ value, genre }) => {
   return (
     <div>
       <input 
+        id={value}
         name={value}
         onChange={handleChange}
         checked={checked}
