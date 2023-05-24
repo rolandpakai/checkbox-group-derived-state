@@ -16,7 +16,7 @@ const CheckboxGroup: React.FC<CheckboxGroupProps> = ({ value }) => {
     if (checked !== genreState) {
       setChecked(genreState);
     }
-  }, [checkboxGroup]);
+  }, [checkboxGroup, value, checked, getDerivedCheckboxGroupState]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
