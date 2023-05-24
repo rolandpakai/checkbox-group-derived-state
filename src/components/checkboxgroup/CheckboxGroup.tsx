@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useEffect } from 'react';
-import { useCheckboxGroupContext, useCheckboxGroupDispatchContext } from "../context/checkboxgroup.context";
+import { useCheckboxGroupContext, useCheckboxGroupDispatchContext } from "../../context/checkboxgroup.context";
 
 type CheckboxGroupProps = {
   value: string;

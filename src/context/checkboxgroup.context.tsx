@@ -94,7 +94,7 @@ const CheckboxGroupContextProvider: React.FC<CheckboxGroupContextProviderProps> 
     getCheckboxOptionState,
     setCheckboxOptionState, 
     setCheckboxGroupState 
-  }), [setCheckboxOptionState, setCheckboxGroupState, getDerivedCheckboxGroupState]);
+  }), [setCheckboxOptionState, setCheckboxGroupState, getDerivedCheckboxGroupState, getCheckboxOptionState]);
 
   return (
     <CheckboxGroup.Provider value={checkboxGroupContextProviderValue}>

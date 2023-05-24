@@ -1,29 +1,29 @@
 import { ChangeEvent, useState, useEffect } from 'react';
-import { useCheckboxGroupContext, useCheckboxGroupDispatchContext } from "../context/checkboxgroup.context";
+import { useCheckboxGroupContext, useCheckboxGroupDispatchContext } from "../../context/checkboxgroup.context";
 
 type CheckboxOptionProps = {
   value: string;
-  genre: string;
+  group: string;
 };
 
-const CheckboxOption: React.FC<CheckboxOptionProps> = ({ value, genre }) => {
+const CheckboxOption: React.FC<CheckboxOptionProps> = ({ value, group }) => {
   const [checked, setChecked] = useState<boolean>(false);
   const { checkboxGroup } = useCheckboxGroupContext();
   const { setCheckboxOptionState, getDerivedCheckboxGroupState, getCheckboxOptionState } = useCheckboxGroupDispatchContext();
 
   useEffect(() => {
-    const genreState = getDerivedCheckboxGroupState(genre);
-    const contextValue = getCheckboxOptionState(genre)[value];
+    const genreState = getDerivedCheckboxGroupState(group);
+    const contextValue = getCheckboxOptionState(group)[value];
 
     setChecked(genreState ||contextValue)
 
-  }, [checkboxGroup, value, genre, getCheckboxOptionState, getDerivedCheckboxGroupState ]);
+  }, [checkboxGroup, value, group, getCheckboxOptionState, getDerivedCheckboxGroupState ]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
 
     setChecked(checked);
-    setCheckboxOptionState(value, genre, checked);
+    setCheckboxOptionState(value, group, checked);
   }
 
   return (
