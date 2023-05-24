@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useState, useMemo, useCallback } from "react";
 
 interface ISongContext {
   songOptionSelection: SongOptionSelectionType;
@@ -58,17 +58,17 @@ const initSongOptionSelection = (songOptions: Record<string, string[]>) => {
 const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, songOptions }) => {
   const [songOptionSelection, setSongOptionSelection] = useState<SongOptionSelectionType>(initSongOptionSelection(songOptions));
 
-  const getGenreSelectionState = (value: string) => {
+  const getGenreSelectionState = useCallback((value: string) => {
     return songOptionSelection[value];
-  }
+  }, [songOptionSelection]);
 
-  const getDerivedGenreState = (value: string) => {
+  const getDerivedGenreState = useCallback((value: string) => {
     const genreOptions = getGenreSelectionState(value);
 
     return isAllOptionChecked(genreOptions);
-  }
+  }, [getGenreSelectionState]);
 
-  const setGenreCheck = (value: string, checked: boolean) => {
+  const setGenreCheck = useCallback((value: string, checked: boolean) => {
     const genreOptions: Record<string, boolean> = songOptionSelection[value];
 
     for (let option in genreOptions) {
@@ -78,17 +78,25 @@ const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, son
     }
 
     setSongOptionSelection({ ...songOptionSelection, [value]: genreOptions});
-  }
+  }, [songOptionSelection, setSongOptionSelection]);
 
-  const setGenreOptionCheck = (value: string, genre: string, checked: boolean) => {
+  const setGenreOptionCheck = useCallback((value: string, genre: string, checked: boolean) => {
     setSongOptionSelection(prevState => {
       return {...prevState, [genre]: {...prevState[genre],  [value]: checked}}
     });
-  }
+  }, [setSongOptionSelection]);
   
+  const songContextProviderValue = useMemo(() => ({ songOptionSelection }), [songOptionSelection]);
+
+  const songDispatchContextProviderValue = useMemo(() => ({ 
+    getDerivedGenreState, 
+    setGenreOptionCheck, 
+    setGenreCheck 
+  }), [setGenreOptionCheck, setGenreCheck, getDerivedGenreState]);
+
   return (
-    <SongContext.Provider value={{ songOptionSelection }}>
-      <SongDispatchContext.Provider value={{ getDerivedGenreState, setGenreOptionCheck, setGenreCheck }}>
+    <SongContext.Provider value={songContextProviderValue}>
+      <SongDispatchContext.Provider value={songDispatchContextProviderValue}>
         {children}
       </SongDispatchContext.Provider>
     </SongContext.Provider>
