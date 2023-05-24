@@ -1,5 +1,5 @@
 {
-  "name": "derived-state",
+  "name": "checkbox-group-derived-state",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
