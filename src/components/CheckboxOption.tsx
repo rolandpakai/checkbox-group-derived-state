@@ -1,5 +1,5 @@
 import { ChangeEvent, useState, useEffect } from 'react';
-import { useSongContext, useSongDispatchContext } from "../context/song.context";
+import { useCheckboxGroupContext, useCheckboxGroupDispatchContext } from "../context/checkboxgroup.context";
 
 type CheckboxOptionProps = {
   value: string;
@@ -8,22 +8,22 @@ type CheckboxOptionProps = {
 
 const CheckboxOption: React.FC<CheckboxOptionProps> = ({ value, genre }) => {
   const [checked, setChecked] = useState<boolean>(false);
-  const { songOptionSelection } = useSongContext();
-  const { setGenreOptionCheck, getDerivedGenreState, getGenreSelectionState } = useSongDispatchContext();
+  const { checkboxGroup } = useCheckboxGroupContext();
+  const { setCheckboxOptionState, getDerivedCheckboxGroupState, getCheckboxOptionState } = useCheckboxGroupDispatchContext();
 
   useEffect(() => {
-    const genreState = getDerivedGenreState(genre);
-    const contextValue = getGenreSelectionState(genre)[value];
+    const genreState = getDerivedCheckboxGroupState(genre);
+    const contextValue = getCheckboxOptionState(genre)[value];
 
     setChecked(genreState ||contextValue)
 
-  }, [songOptionSelection]);
+  }, [checkboxGroup]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const checked = e.target.checked;
 
     setChecked(checked);
-    setGenreOptionCheck(value, genre, checked);
+    setCheckboxOptionState(value, genre, checked);
   }
 
   return (

@@ -1,6 +1,6 @@
 import CheckboxGroup from './CheckboxGroup';
 import CheckboxOption from './CheckboxOption';
-import SongContextProvider from "../context/song.context";
+import CheckboxGroupContextProvider from "../context/checkboxgroup.context";
 
 type GenreType = string[];
 
@@ -17,7 +17,7 @@ const SongSelector: React.FC = () => {
     <>
       <h3>Song Selector</h3>
       <div>
-        <SongContextProvider songOptions={OPTIONS} >
+        <CheckboxGroupContextProvider value={OPTIONS} >
         {GENRES.map((genre) => {
           return (
             <div key={genre}>
@@ -38,12 +38,10 @@ const SongSelector: React.FC = () => {
             </div>
           )
         })}
-        </SongContextProvider>
+        </CheckboxGroupContextProvider>
       </div>
     </>
   )
 };
-
-
 
 export default SongSelector;
