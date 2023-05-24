@@ -23,7 +23,7 @@ const SongDispatchContext = createContext<ISongDispatchContext | null>(null);
 
 const isAllOptionChecked = (obj: Record<string, boolean>) => {
   if (obj) {
-    for (var key in obj) {
+    for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
         if (!obj[key]) {
           return false;
@@ -39,7 +39,7 @@ const initSongOptionSelection = (songOptions: Record<string, string[]>) => {
   const initSongOption: SongOptionSelectionType = {};
   
   if (songOptions) {
-    for (var key in songOptions) {
+    for (let key in songOptions) {
       if (songOptions.hasOwnProperty(key)) {
         const genreOptions: Record<string, boolean> = {};
 
@@ -71,7 +71,7 @@ const SongContextProvider: React.FC<SongContextProviderProps> = ({ children, son
   const setGenreCheck = (value: string, checked: boolean) => {
     const genreOptions: Record<string, boolean> = songOptionSelection[value];
 
-    for (var option in genreOptions) {
+    for (let option in genreOptions) {
       if (genreOptions.hasOwnProperty(option)) {
         genreOptions[option] = checked;
       }

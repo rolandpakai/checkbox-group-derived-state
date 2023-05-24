@@ -1,5 +1,6 @@
-import { ChangeEvent, useState, useEffect } from 'react';
-import SongContextProvider, { useSongContext, useSongDispatchContext } from "../context/song.context";
+import CheckboxGroup from './CheckboxGroup';
+import CheckboxOption from './CheckboxOption';
+import SongContextProvider from "../context/song.context";
 
 type GenreType = string[];
 
@@ -20,13 +21,13 @@ const SongSelector: React.FC = () => {
         {GENRES.map((genre) => {
           return (
             <div key={genre}>
-              <Genre 
+              <CheckboxGroup 
                 key={genre}
                 value={genre}
               />
               {OPTIONS[genre].map((option) => {
                   return (
-                    <GenreOption 
+                    <CheckboxOption 
                       key={option} 
                       value={option}
                       genre={genre}
@@ -43,81 +44,6 @@ const SongSelector: React.FC = () => {
   )
 };
 
-type GenreProps = {
-  value: string;
-};
 
-const Genre: React.FC<GenreProps> = ({ value }) => {
-  const [checked, setChecked] = useState<boolean>(false);
-  const { songOptionSelection } = useSongContext();
-  const { getDerivedGenreState, setGenreCheck } = useSongDispatchContext();
-
-  useEffect(() => {
-    const genreState = getDerivedGenreState(value);
-
-    if (checked !== genreState) {
-      setChecked(genreState);
-    }
-  }, [songOptionSelection]);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-
-    setChecked(checked);
-    setGenreCheck(value, checked);
-  }
-
-  return (
-    <div>
-      <input 
-        id={value}
-        name={value}
-        onChange={handleChange}
-        checked={checked}
-        type="checkbox"
-      />
-      <label htmlFor={value}><b>{value}</b></label>
-    </div>
-  )
-};
-
-type GenreOptionProps = {
-  value: string;
-  genre: string;
-};
-
-const GenreOption: React.FC<GenreOptionProps> = ({ value, genre }) => {
-  const [checked, setChecked] = useState<boolean>(false);
-  const { songOptionSelection } = useSongContext();
-  const { setGenreOptionCheck, getDerivedGenreState } = useSongDispatchContext();
-
-  useEffect(() => {
-    const genreState = getDerivedGenreState(genre);
-
-    if (checked !== genreState) {
-      setChecked(genreState);
-    }
-  }, [songOptionSelection]);
-
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-
-    setChecked(checked);
-    setGenreOptionCheck(value, genre, checked);
-  }
-
-  return (
-    <div>
-      <input 
-        id={value}
-        name={value}
-        onChange={handleChange}
-        checked={checked}
-        type="checkbox"
-      />
-      <label htmlFor={value}>{value}</label>
-    </div>
-  )
-};
 
 export default SongSelector;
