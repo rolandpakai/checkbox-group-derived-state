@@ -1,17 +1,19 @@
 import CheckboxGroup from './CheckboxGroup';
 import CheckboxOption from './CheckboxOption';
 import CheckboxGroupContextProvider from "../../context/checkboxgroup.context";
+import { CheckboxGroupType, CheckboxGroupListType } from '../../types'
 
 interface CheckboxGroupComponentProps {
-  value: Record<string, string[]>;
+  value: CheckboxGroupListType;
+  defaultValue: CheckboxGroupType;
 };
 
-const CheckboxGroupComponent: React.FC<CheckboxGroupComponentProps> = ({ value }) => {
+const CheckboxGroupComponent: React.FC<CheckboxGroupComponentProps> = ({ value, defaultValue }) => {
   const groups = Object.keys(value);
   
   return (
     <div>
-      <CheckboxGroupContextProvider value={value} >
+      <CheckboxGroupContextProvider value={value} defaultValue={defaultValue} >
       {groups.map((group) => {
         return (
           <div key={group}>
@@ -38,3 +40,4 @@ const CheckboxGroupComponent: React.FC<CheckboxGroupComponentProps> = ({ value }
 };
 
 export default CheckboxGroupComponent;
+export type { CheckboxGroupType, CheckboxGroupOptionType, CheckboxGroupListType } from '../../types'

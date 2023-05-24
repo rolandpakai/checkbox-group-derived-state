@@ -1,6 +1,5 @@
 import { ReactNode, createContext, useContext, useState, useMemo, useCallback } from "react";
-
-type CheckboxGroupType = Record<string, Record<string, boolean>>;
+import { CheckboxGroupOptionType, CheckboxGroupType, CheckboxGroupListType } from '../types';
 
 interface ICheckboxGroupContext {
   checkboxGroup: CheckboxGroupType;
@@ -8,21 +7,22 @@ interface ICheckboxGroupContext {
 
 interface ICheckboxDispatchContext {
   getDerivedCheckboxGroupState: (value:string) => boolean;
-  getCheckboxOptionState: (group: string) => Record<string, boolean>;
+  getCheckboxOptionState: (group: string) => CheckboxGroupOptionType;
   setCheckboxOptionState: (value: string, group: string, checked: boolean) => void;
   setCheckboxGroupState: (value: string, checked: boolean) => void;
 }
 
 type CheckboxGroupContextProviderProps = {
   children: ReactNode;
-  value: Record<string, string[]>;
+  value: CheckboxGroupListType;
+  defaultValue: CheckboxGroupType;
 }
 
 const CheckboxGroup = createContext<ICheckboxGroupContext | null>(null);
 
 const CheckboxGroupDispatchContext = createContext<ICheckboxDispatchContext | null>(null);
 
-const isAllOptionChecked = (obj: Record<string, boolean>) => {
+const isAllOptionChecked = (obj: CheckboxGroupOptionType): boolean => {
   if (obj) {
     for (let key in obj) {
       if (obj.hasOwnProperty(key)) {
@@ -36,13 +36,13 @@ const isAllOptionChecked = (obj: Record<string, boolean>) => {
   return false;
 }
 
-const initCheckboxGroup = (value: Record<string, string[]>) => {
+const initCheckboxGroup = (value: CheckboxGroupListType, defaultValue: CheckboxGroupType): CheckboxGroupType => {
   const checkboxGroup: CheckboxGroupType = {};
   
   if (value) {
     for (let key in value) {
       if (value.hasOwnProperty(key)) {
-        const groupOptions: Record<string, boolean> = {};
+        const groupOptions: CheckboxGroupOptionType = {};
 
         value[key].forEach((option) => {
           groupOptions[option] = false;
@@ -56,21 +56,21 @@ const initCheckboxGroup = (value: Record<string, string[]>) => {
   return checkboxGroup;
 }
 
-const CheckboxGroupContextProvider: React.FC<CheckboxGroupContextProviderProps> = ({ children, value }) => {
-  const [checkboxGroup, setCheckboxGroup] = useState<CheckboxGroupType>(initCheckboxGroup(value));
+const CheckboxGroupContextProvider: React.FC<CheckboxGroupContextProviderProps> = ({ children, value, defaultValue }) => {
+  const [checkboxGroup, setCheckboxGroup] = useState<CheckboxGroupType>(initCheckboxGroup(value, defaultValue));
 
-  const getCheckboxOptionState = useCallback((group: string) => {
+  const getCheckboxOptionState = useCallback((group: string): CheckboxGroupOptionType => {
     return checkboxGroup[group];
   }, [checkboxGroup]);
 
-  const getDerivedCheckboxGroupState = useCallback((value: string) => {
+  const getDerivedCheckboxGroupState = useCallback((value: string): boolean => {
     const checkboxGroupOptions = getCheckboxOptionState(value);
 
     return isAllOptionChecked(checkboxGroupOptions);
   }, [getCheckboxOptionState]);
 
-  const setCheckboxGroupState = useCallback((group: string, checked: boolean) => {
-    const checkboxGroupOptions: Record<string, boolean> = checkboxGroup[group];
+  const setCheckboxGroupState = useCallback((group: string, checked: boolean): void => {
+    const checkboxGroupOptions: CheckboxGroupOptionType = checkboxGroup[group];
 
     for (let option in checkboxGroupOptions) {
       if (checkboxGroupOptions.hasOwnProperty(option)) {
@@ -81,7 +81,7 @@ const CheckboxGroupContextProvider: React.FC<CheckboxGroupContextProviderProps> 
     setCheckboxGroup({ ...checkboxGroup, [group]: checkboxGroupOptions});
   }, [checkboxGroup, setCheckboxGroup]);
 
-  const setCheckboxOptionState = useCallback((value: string, group: string, checked: boolean) => {
+  const setCheckboxOptionState = useCallback((value: string, group: string, checked: boolean): void => {
     setCheckboxGroup(prevState => {
       return {...prevState, [group]: {...prevState[group],  [value]: checked}}
     });
