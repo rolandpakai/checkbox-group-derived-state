@@ -12,7 +12,7 @@ interface ICheckboxDispatchContext {
   setCheckboxGroupState: (value: string, checked: boolean) => void;
 }
 
-type CheckboxGroupContextProviderProps = {
+interface CheckboxGroupContextProviderProps {
   children: ReactNode;
   value: CheckboxGroupListType;
   defaultValue: CheckboxGroupType;
@@ -36,19 +36,27 @@ const isAllOptionChecked = (obj: CheckboxGroupOptionType): boolean => {
   return false;
 }
 
+const getCheckboxGroupOptionValue = (group: string, option: string, defaultValue: CheckboxGroupType): boolean => {
+  if (defaultValue && defaultValue.hasOwnProperty(group) && defaultValue[group].hasOwnProperty(option)) {
+    return defaultValue[group][option];
+  } else {
+    return false;
+  }
+}
+
 const initCheckboxGroup = (value: CheckboxGroupListType, defaultValue: CheckboxGroupType): CheckboxGroupType => {
   const checkboxGroup: CheckboxGroupType = {};
   
   if (value) {
-    for (let key in value) {
-      if (value.hasOwnProperty(key)) {
+    for (let group in value) {
+      if (value.hasOwnProperty(group)) {
         const groupOptions: CheckboxGroupOptionType = {};
 
-        value[key].forEach((option) => {
-          groupOptions[option] = false;
+        value[group].forEach((option) => {
+          groupOptions[option] = getCheckboxGroupOptionValue(group, option, defaultValue);
         });
 
-        checkboxGroup[key] = groupOptions;
+        checkboxGroup[group] = groupOptions;
       }
     }
   }
